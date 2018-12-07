@@ -25,7 +25,7 @@ public class ClienteController
 	@Autowired
 	private IClienteDao clienteDao;
 	
-	@RequestMapping(value="/", method=RequestMethod.GET)
+	@RequestMapping(value="/listar", method=RequestMethod.GET)
 	public String listar(Model model) 
 	{
 		model.addAttribute("titulo", "Listado de clientes");
@@ -55,7 +55,7 @@ public class ClienteController
 			cliente = clienteDao.findOne(id);
 		}
 		else
-			return "redirect;/listar";
+			return "redirect:/listar";
 		
 		model.put("cliente", cliente);
 		model.put("titulo", "Editar Cliente");
@@ -75,6 +75,15 @@ public class ClienteController
 		clienteDao.save(cliente);
 		status.setComplete();
 		
-		return "redirect:";
+		return "redirect:/listar";
+	}
+	
+	@RequestMapping(value="/eliminar/{id}")
+	public String eliminar(@PathVariable(value = "id") Long id)
+	{
+		if(id > 0)
+			clienteDao.delete(id);
+		
+		return "redirect:/listar";
 	}
 }

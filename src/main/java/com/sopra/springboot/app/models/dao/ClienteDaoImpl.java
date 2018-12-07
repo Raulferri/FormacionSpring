@@ -28,6 +28,7 @@ public class ClienteDaoImpl implements IClienteDao
 															  //equivalente a un SELECT *
 	}
 	
+	/*El save se utiliza tanto para editar como para eliminar*/
 	@Override
 	@Transactional
 	public void save(Cliente cliente) 
