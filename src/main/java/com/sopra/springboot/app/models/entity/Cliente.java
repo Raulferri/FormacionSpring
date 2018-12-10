@@ -43,6 +43,8 @@ public class Cliente implements Serializable
 	@DateTimeFormat(pattern="dd-MM-yy")
 	private Date createAt;
 	
+	private String foto;
+	
 //	@PrePersist //Esto sirve por si queremos que se añada la fecha de manera automatica
 //	public void prePersist()
 //	{
@@ -101,5 +103,15 @@ public class Cliente implements Serializable
 	public void setCreateAt(Date createAt) 
 	{
 		this.createAt = createAt;
+	}
+	
+	public String getFoto() 
+	{
+		return foto;
+	}
+
+	public void setFoto(String foto) 
+	{
+		this.foto = foto;
 	}
 }
