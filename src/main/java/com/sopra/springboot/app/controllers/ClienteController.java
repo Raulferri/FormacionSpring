@@ -114,15 +114,23 @@ public class ClienteController
 	@RequestMapping(value="/form", method=RequestMethod.POST)
 	public String guardar(@Valid Cliente cliente, BindingResult result, Model model, @RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
 		
-		if(result.hasErrors()) {
+		if(result.hasErrors()) 
+		{
 			model.addAttribute("titulo", "Formulario de Cliente");
 			return "form";
 		}
 		
-		if(!foto.isEmpty()) {
-			Path directorioRecursos = Paths.get("src/main/resources/static/uploads");
-			String rootPath = directorioRecursos.toFile().getAbsolutePath();
-			try {
+		if(!foto.isEmpty()) 
+		{
+//			APUNTANDO AL WORKSPACE
+//			Path directorioRecursos = Paths.get("src/main/resources/static/uploads");
+//			String rootPath = directorioRecursos.toFile().getAbsolutePath();
+			
+//			APUNTANDO A DIRECTORIO EXTERNO - OPCION CORRECTA
+			String rootPath = "C://temp//uploads";
+			
+			try 
+			{
 				byte[] bytes = foto.getBytes();
 				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
 				Files.write(rutaCompleta,  bytes);
@@ -130,7 +138,9 @@ public class ClienteController
 				
 				cliente.setFoto(foto.getOriginalFilename());
 				
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 			
