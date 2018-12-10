@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sopra.springboot.app.models.entity.Cliente;
 import com.sopra.springboot.app.models.service.IClienteService;
+import com.sopra.springboot.app.util.paginator.PageRender;
 
 @Controller
 @SessionAttributes("cliente")
@@ -37,8 +38,11 @@ public class ClienteController
 		//Pageable pageRequest = pageRequest.of(page) --> Spring 5
 		Page<Cliente> clientes = clienteService.findAll(pageRequest);
 		
+		PageRender<Cliente> pageRender = new PageRender<>("/listar", clientes);
+		
 		model.addAttribute("titulo", "Listado de clientes");
 		model.addAttribute("clientes", clientes);
+		model.addAttribute("page", pageRender);
 		
 		return "listar";
 	}

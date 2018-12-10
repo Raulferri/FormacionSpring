@@ -1,4 +1,4 @@
-package com.sopra.springboot.app.util.paginater;
+package com.sopra.springboot.app.util.paginator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,12 +86,12 @@ public class PageRender<T>
 		return page.isLast();
 	}
 	
-	public boolean isHashNext()
+	public boolean isHasNext()
 	{
 		return page.hasNext();
 	}
 	
-	public boolean isHashPrevious()
+	public boolean isHasPrevious()
 	{
 		return page.hasPrevious();
 	}

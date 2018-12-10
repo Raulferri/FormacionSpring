@@ -1,4 +1,4 @@
-package com.sopra.springboot.app.util.paginater;
+package com.sopra.springboot.app.util.paginator;
 
 public class PageItem 
 {
