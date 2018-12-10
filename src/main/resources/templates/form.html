@@ -3,7 +3,7 @@
 	<head th:replace="layout/layout :: head"></head>
 	<body>
 		<header th:replace="layout/layout :: header"></header>
-		<div class="container">
+		<div class="container py-4">
 			<div class="card bg-dark text-white">
 				<div  class="card-header" th:text="${titulo}"></div>
 				<div class="card-body">
@@ -12,7 +12,7 @@
 							<li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
 						</ul>
 					</div>
-					<form th:action="@{/form}" th:object="${cliente}" method="post" enctype="">
+					<form th:action="@{/form}" th:object="${cliente}" method="post" enctype="multipart/form-data">
 						<div class="form-group row">
 							<label class="col-sm-2 col-form-label">Nombre</label>
 							<div class="col-sm6">
