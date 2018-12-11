@@ -1,5 +1,6 @@
 package com.sopra.springboot.app.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -47,21 +48,22 @@ public class ClienteController
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
-	@GetMapping(value="/uploads/{filename: .+}")
+	private final static String UPLOADS_FOLDER = "uploads";
+	
+	@GetMapping(value="/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename)
 	{
-		Path pathFoto = Paths.get("uploads").resolve(filename).toAbsolutePath();
+		Path pathFoto = Paths.get(UPLOADS_FOLDER).resolve(filename).toAbsolutePath();
 		log.info("pathFoto: " + pathFoto);
-		
 		Resource recurso = null;
 		
-		try 
+		try
 		{
 			recurso = new UrlResource(pathFoto.toUri());
 			
-			if(recurso.exists() || !recurso.isReadable())
+			if(!recurso.exists() || !recurso.isReadable()) 
 			{
-				throw new RuntimeException("Error: no se puede cargar la imagen" + pathFoto.toString());
+				throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
 			}
 		} 
 		catch (MalformedURLException e) 
@@ -69,7 +71,7 @@ public class ClienteController
 			e.printStackTrace();
 		}
 		
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"").body(recurso);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() +"\"").body(recurso);
 	}
 	
 	@GetMapping(value="/ver/{id}")
@@ -157,17 +159,28 @@ public class ClienteController
 		
 		if(!foto.isEmpty()) 
 		{
+			if(cliente.getId() != null && cliente.getId() > 0 && cliente.getFoto() != null && cliente.getFoto().length() > 0)
+			{
+				Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(cliente.getFoto()).toAbsolutePath();
+				File archivo = rootPath.toFile();
+				
+				if(archivo.exists() && archivo.canRead())
+					if(archivo.delete())
+						flash.addFlashAttribute("info", "Foto" + cliente.getFoto() + " editada con exito!");
+			}
+			
 //			APUNTANDO AL WORKSPACE
 //			Path directorioRecursos = Paths.get("src/main/resources/static/uploads");
 //			String rootPath = directorioRecursos.toFile().getAbsolutePath();
 			
 //			APUNTANDO A DIRECTORIO EXTERNO - OPCION SOLO USADO CON SPRING Y TOCANDO EL RESOURCE HANDLER EN LA CLASE MVC CONFIG
 //			String rootPath = "C://temp//uploads";
+			
 
 //			APUNTANDO A DIRECTORIO EXTERNO - OPCION MAS COMUN USANDO UN UNIQUE FILENAME
 			String uniqueFilename = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename();
 			//Path relativo al proyecto
-			Path rootPath = Paths.get("uploads").resolve(uniqueFilename);
+			Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(uniqueFilename);
 			//Path absoluto
 			Path rootAbsolutPath = rootPath.toAbsolutePath();
 			//usamos la clase LogFactory para ver por consola nuestras rutas
@@ -185,7 +198,7 @@ public class ClienteController
 				Files.copy(foto.getInputStream(), rootAbsolutPath);
 				flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename+ "'");
 				
-				cliente.setFoto(foto.getOriginalFilename());
+				cliente.setFoto(uniqueFilename);
 				
 			} 
 			catch (IOException e) 
@@ -209,8 +222,17 @@ public class ClienteController
 	{
 		if(id > 0)
 		{
+			Cliente cliente = clienteService.findOne(id);
+			
 			clienteService.delete(id);
 			flash.addFlashAttribute("success", "¡Cliente eliminado con exito!");
+			
+			Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(cliente.getFoto()).toAbsolutePath();
+			File archivo = rootPath.toFile();
+			
+			if(archivo.exists() && archivo.canRead())
+				if(archivo.delete())
+					flash.addFlashAttribute("info", "Foto" + cliente.getFoto() + " eliminada con exito!");
 		}
 		
 		return "redirect:/listar";
