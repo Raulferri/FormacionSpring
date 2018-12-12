@@ -13,4 +13,10 @@ public interface IUploadService
 	public String copy(MultipartFile file) throws IOException;
 	
 	public boolean delete(String filename);
+	
+	//METODOS CREADOS PARA PODER ELIMINAR Y CREAR LA CARPETA UPLOADS CADA VEZ QUE SE CIERRA 
+		//O ABRE ECLIPSE O SE LEVANTA Y PARA EL SERVIDOR
+//	public void deleteAll();
+//	
+//	public void init() throws IOException;
 }
