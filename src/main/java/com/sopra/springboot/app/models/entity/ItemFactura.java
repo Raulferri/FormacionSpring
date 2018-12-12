@@ -26,6 +26,7 @@ public class ItemFactura implements Serializable
 	@JoinColumn(name="producto_id")
 	private Producto producto;
 	
+	
 	public Double calcularImporte()
 	{
 		return cantidad.doubleValue() * producto.getPrecio();
